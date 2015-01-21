@@ -1,45 +1,61 @@
-//
-//  GameScene.swift
-//  Pong
-//
-//  Created by Thor Martin Abrahamsen on 21.01.15.
-//  Copyright (c) 2015 progark. All rights reserved.
-//
 
 import SpriteKit
 
 class GameScene: SKScene {
+    
+    let player1 = SKSpriteNode(imageNamed: "rectangle_red")
+    let player2 = SKSpriteNode(imageNamed: "rectangle_blue")
+    
     override func didMoveToView(view: SKView) {
-        /* Setup your scene here */
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "Hello, World!";
-        myLabel.fontSize = 65;
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
+        /* Scene setup */
+        backgroundColor = SKColor.blackColor()
         
-        self.addChild(myLabel)
+        /* Player 1 */
+        player1.name = "sprite"
+        player1.setScale(0.1)
+        player1.position = CGPoint(x: size.width/2, y: size.height*0.1)
+        addChild(player1)
+        
+        /* Player 2 */
+        player2.name = "sprite"
+        player2.setScale(0.1)
+        player2.position = CGPoint(x: size.width/2, y: size.height*0.5)
+        addChild(player2)
     }
     
+
+    /* Dictonary for determing which node is selected */
+    var selectedNodes:[UITouch:SKSpriteNode] = [UITouch:SKSpriteNode]()
+    
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        /* Called when a touch begins */
-        
-        for touch: AnyObject in touches {
+        for touch:AnyObject in touches {
             let location = touch.locationInNode(self)
-            
-            let sprite = SKSpriteNode(imageNamed:"Spaceship")
-            
-            sprite.xScale = 0.5
-            sprite.yScale = 0.5
-            sprite.position = location
-            
-            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-            
-            sprite.runAction(SKAction.repeatActionForever(action))
-            
-            self.addChild(sprite)
+            let node:SKSpriteNode? = self.nodeAtPoint(location) as? SKSpriteNode
+            // Add the selected node to dictionary "selectedNodes"
+            if (node?.name == "sprite") {
+                let touchObj = touch as UITouch
+                selectedNodes[touchObj] = node!
+            }
         }
     }
-   
-    override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
+    override func touchesMoved(touches: NSSet, withEvent event: UIEvent) {
+        for touch:AnyObject in touches {
+            let xLocation = touch.locationInNode(self).x
+            let touchObj = touch as UITouch
+            // Update position of sprites
+            if let node:SKSpriteNode? = selectedNodes[touchObj] {
+                node?.runAction(SKAction.moveToX(xLocation, duration: 0))
+            }
+        }
     }
+    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
+        for touch:AnyObject in touches {
+            let touchObj = touch as UITouch
+            // Remove selected node from dictionary "selectedNodes"
+            if let exists:AnyObject? = selectedNodes[touchObj] {
+                selectedNodes[touchObj] = nil
+            }
+        }
+    }
+    
 }
