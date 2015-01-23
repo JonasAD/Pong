@@ -1,8 +1,15 @@
 
 import SpriteKit
 
+struct PhysicsCategory {
+    static let None         : UInt32 = 0
+    static let All          : UInt32 = UInt32.max
+    static let Ball      : UInt32 = 0x1 << 1
+    static let TopWall         : UInt32 = 0x1 << 2
+    static let ButtomWall   : UInt32 = 0x1 << 3
+}
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let player1 = SKSpriteNode(imageNamed: "rectangle_red")
     let player2 = SKSpriteNode(imageNamed: "rectangle_blue")
@@ -15,6 +22,8 @@ class GameScene: SKScene {
         self.physicsBody = SKPhysicsBody(edgeLoopFromRect: view.frame)
         self.physicsBody?.friction = 0.0
         self.physicsWorld.gravity = CGVectorMake(0, 0)
+        // Contact
+        self.physicsWorld.contactDelegate = self
         
         
         /* Player 1 - Buttom bar / home */
@@ -52,7 +61,10 @@ class GameScene: SKScene {
         ball.physicsBody?.linearDamping = 0.0
         ball.physicsBody?.angularDamping = 0.0
         ball.physicsBody?.allowsRotation = false
-        ball.physicsBody?.applyForce(CGVectorMake(1, -1))
+        ball.physicsBody?.applyForce(CGVectorMake(0.2, -0.2))
+        // Contact
+        ball.physicsBody!.categoryBitMask = PhysicsCategory.Ball
+ 
         
         
         /* Buttom */
@@ -61,6 +73,20 @@ class GameScene: SKScene {
         addChild(buttom)
         // Physics
         buttom.physicsBody = SKPhysicsBody(edgeLoopFromRect: buttomRect)
+        // Contact
+        buttom.physicsBody!.categoryBitMask = PhysicsCategory.ButtomWall
+        buttom.physicsBody?.contactTestBitMask = PhysicsCategory.Ball
+        
+        
+        /* Top */
+        let topRect = CGRectMake(frame.origin.x, frame.size.height, frame.size.width, 1)
+        let top = SKNode()
+        addChild(top)
+        // Physics
+        top.physicsBody = SKPhysicsBody(edgeLoopFromRect: topRect)
+        // Contact
+        top.physicsBody!.categoryBitMask = PhysicsCategory.TopWall
+        top.physicsBody?.contactTestBitMask = PhysicsCategory.Ball
         
     }
     
@@ -96,6 +122,28 @@ class GameScene: SKScene {
             if let exists:AnyObject? = selectedNodes[touchObj] {
                 selectedNodes[touchObj] = nil
             }
+        }
+    }
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        var firstBody: SKPhysicsBody
+        var secondBody: SKPhysicsBody
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        } else {
+            firstBody = contact.bodyB
+            secondBody = contact.bodyA
+        }
+        
+        // Ball hits bottom - player 1 looses life
+        if firstBody.categoryBitMask == PhysicsCategory.Ball && secondBody.categoryBitMask == PhysicsCategory.ButtomWall {
+            println("Hit BOTTOM")
+        }
+        // Ball hits top - player 2 looses life
+        if firstBody.categoryBitMask == PhysicsCategory.Ball && secondBody.categoryBitMask == PhysicsCategory.TopWall {
+            println("Hit TOP")
         }
     }
     
