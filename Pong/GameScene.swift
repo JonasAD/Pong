@@ -4,14 +4,25 @@ import SpriteKit
 struct PhysicsCategory {
     static let None         : UInt32 = 0
     static let All          : UInt32 = UInt32.max
-    static let Ball      : UInt32 = 0x1 << 1
-    static let TopWall         : UInt32 = 0x1 << 2
+    static let Ball         : UInt32 = 0x1 << 1
+    static let TopWall      : UInt32 = 0x1 << 2
     static let ButtomWall   : UInt32 = 0x1 << 3
 }
 
 class PlayerNode: SKSpriteNode {
     var moveableByUser = true   // Node can be moved by a user
     var life = 9                // Starting with a number of lifes
+    var label = SKLabelNode()   // Label for displaying lifes
+    func updateLife() {         // Updates the life
+        self.life -= 1
+        self.label.text = String(self.life)
+    }
+}
+
+class ScoreLabel: SKLabelNode {
+    func update(text: String){
+        self.text = text
+    }
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -93,6 +104,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         top.physicsBody!.categoryBitMask = PhysicsCategory.TopWall
         top.physicsBody?.contactTestBitMask = PhysicsCategory.Ball
         
+        /* Life-label player 1 */
+        player1.label.text = String(player1.life)
+        player1.label.fontColor = SKColor.redColor()
+        player1.label.position = CGPoint(x: size.width*0.9, y: size.height*0.45)
+        addChild(player1.label)
+        
+        /* Life-label player 2 */
+        player2.label.text = String(player2.life)
+        player2.label.fontColor = SKColor.blueColor()
+        player2.label.zRotation = CGFloat(M_PI)
+        player2.label.position = CGPoint(x: size.width*0.1, y: size.height*0.55)
+        addChild(player2.label)
+        
     }
     
 
@@ -145,11 +169,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Ball hits bottom - player 1 looses life
         if firstBody.categoryBitMask == PhysicsCategory.Ball && secondBody.categoryBitMask == PhysicsCategory.ButtomWall {
             println("Hit BOTTOM")
+            player1.updateLife()
         }
         // Ball hits top - player 2 looses life
         if firstBody.categoryBitMask == PhysicsCategory.Ball && secondBody.categoryBitMask == PhysicsCategory.TopWall {
             println("Hit TOP")
+            player2.updateLife()
         }
     }
+
     
 }
