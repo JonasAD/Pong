@@ -9,10 +9,15 @@ struct PhysicsCategory {
     static let ButtomWall   : UInt32 = 0x1 << 3
 }
 
+class PlayerNode: SKSpriteNode {
+    var moveableByUser = true   // Node can be moved by a user
+    var life = 9                // Starting with a number of lifes
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    let player1 = SKSpriteNode(imageNamed: "rectangle_red")
-    let player2 = SKSpriteNode(imageNamed: "rectangle_blue")
+    let player1 = PlayerNode(imageNamed: "rectangle_red")
+    let player2 = PlayerNode(imageNamed: "rectangle_blue")
     let ball = SKSpriteNode(imageNamed: "ball_aqua")
     
     override func didMoveToView(view: SKView) {
@@ -97,9 +102,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         for touch:AnyObject in touches {
             let location = touch.locationInNode(self)
-            let node:SKSpriteNode? = self.nodeAtPoint(location) as? SKSpriteNode
+            let node:PlayerNode? = self.nodeAtPoint(location) as? PlayerNode
             // Add the selected node to dictionary "selectedNodes"
-            if (node?.name == "moveableByUser") {
+            if (node?.moveableByUser == true) {
                 let touchObj = touch as UITouch
                 selectedNodes[touchObj] = node!
             }
