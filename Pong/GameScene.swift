@@ -107,14 +107,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Life-label player 1 */
         player1.label.text = String(player1.life)
         player1.label.fontColor = SKColor.redColor()
+        player1.label.zRotation = CGFloat(3*M_PI/2)
         player1.label.position = CGPoint(x: size.width*0.9, y: size.height*0.45)
         addChild(player1.label)
         
         /* Life-label player 2 */
         player2.label.text = String(player2.life)
         player2.label.fontColor = SKColor.blueColor()
-        player2.label.zRotation = CGFloat(M_PI)
-        player2.label.position = CGPoint(x: size.width*0.1, y: size.height*0.55)
+        player2.label.zRotation = CGFloat(3*M_PI/2)
+        player2.label.position = CGPoint(x: size.width*0.9, y: size.height*0.55)
         addChild(player2.label)
         
     }
