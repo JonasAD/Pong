@@ -57,7 +57,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Player 2 - Top bar / opponent */
         player2.name = "moveableByUser"
         player2.setScale(0.1)
-        player2.position = CGPoint(x: size.width/2, y: size.height*0.5)
+        player2.position = CGPoint(x: size.width/2, y: size.height*0.9)
         addChild(player2)
         // Physics
         player2.physicsBody = SKPhysicsBody(rectangleOfSize: player1.size)
