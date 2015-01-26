@@ -19,12 +19,6 @@ class PlayerNode: SKSpriteNode {
     }
 }
 
-class ScoreLabel: SKLabelNode {
-    func update(text: String){
-        self.text = text
-    }
-}
-
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let player1 = PlayerNode(imageNamed: "rectangle_red")
