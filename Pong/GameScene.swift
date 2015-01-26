@@ -24,6 +24,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let player1 = PlayerNode(imageNamed: "rectangle_red")
     let player2 = PlayerNode(imageNamed: "rectangle_blue")
     let ball = SKSpriteNode(imageNamed: "ball_aqua")
+    var speedTimer = NSTimer()
     
     override func didMoveToView(view: SKView) {
         /* Scene setup */
@@ -71,7 +72,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.linearDamping = 0.0
         ball.physicsBody?.angularDamping = 0.0
         ball.physicsBody?.allowsRotation = false
-        ball.physicsBody?.applyForce(CGVectorMake(0.2, -0.2))
         // Contact
         ball.physicsBody!.categoryBitMask = PhysicsCategory.Ball
  
@@ -112,6 +112,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player2.label.position = CGPoint(x: size.width*0.9, y: size.height*0.55)
         addChild(player2.label)
         
+        /* Start Game */
+        self.startGame()
     }
     
 
@@ -171,6 +173,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             println("Hit TOP")
             player2.updateLife()
         }
+    }
+    
+    func startGame() {
+        let x = random(min: CGFloat(-0.2), max: CGFloat(0.2))
+        let y = random(min: CGFloat(-0.2), max: CGFloat(0.2))
+        println(x,y)
+        ball.physicsBody?.applyForce(CGVectorMake(x, y))
+        speedTimer = NSTimer.scheduledTimerWithTimeInterval(10.0, target: self, selector: Selector("speedUp"), userInfo: nil, repeats: true)
+    }
+    
+    func speedUp() {
+        /* X-direction */
+        if(ball.physicsBody?.velocity.dx > 0) {
+            ball.physicsBody?.velocity.dx += 100
+        } else {
+            ball.physicsBody?.velocity.dx -= 100
+        }
+        /* Y-direction */
+        if(ball.physicsBody?.velocity.dy > 0) {
+            ball.physicsBody?.velocity.dy += 100
+        } else {
+            ball.physicsBody?.velocity.dy -= 100
+        }
+    }
+    
+    func random(#min: CGFloat, max: CGFloat) -> CGFloat {
+        let rand = CGFloat(Float(arc4random()) / 0xFFFFFFFF)
+        return rand * (max - min) + min
     }
 
     
