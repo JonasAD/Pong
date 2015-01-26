@@ -25,6 +25,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let player2 = PlayerNode(imageNamed: "rectangle_blue")
     let ball = SKSpriteNode(imageNamed: "ball_aqua")
     var speedTimer = NSTimer()
+    var gameoverLabel = SKLabelNode()
     
     override func didMoveToView(view: SKView) {
         /* Scene setup */
@@ -63,7 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Ball */
         ball.setScale(0.1)
-        ball.position = CGPoint(x: size.width/2, y: size.height*0.3)
+        ball.position = CGPoint(x: size.width/2, y: size.height/2)
         addChild(ball)
         // Physics
         ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.frame.size.height/2)
@@ -112,8 +113,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player2.label.position = CGPoint(x: size.width*0.9, y: size.height*0.55)
         addChild(player2.label)
         
+        /* GameOver Label */
+        gameoverLabel.text = "Game over!"
+        gameoverLabel.fontColor = SKColor.blackColor()
+        gameoverLabel.position = CGPoint(x: size.width/2, y: size.height/2)
+        gameoverLabel.hidden = true
+        addChild(gameoverLabel)
+        
         /* Start Game */
-        self.startGame()
+        self.checkScore()
     }
     
 
@@ -151,7 +159,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func didBeginContact(contact: SKPhysicsContact) {
+    func didBeginContact(contact: SKPhysicsContact) { // BUG! When the ball reaches high velocity (speed) this method is called multiple times, withdrawing lifes from the players.
         var firstBody: SKPhysicsBody
         var secondBody: SKPhysicsBody
         
@@ -166,35 +174,61 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Ball hits bottom - player 1 looses life
         if firstBody.categoryBitMask == PhysicsCategory.Ball && secondBody.categoryBitMask == PhysicsCategory.ButtomWall {
             println("Hit BOTTOM")
+            self.checkScore()
             player1.updateLife()
         }
         // Ball hits top - player 2 looses life
         if firstBody.categoryBitMask == PhysicsCategory.Ball && secondBody.categoryBitMask == PhysicsCategory.TopWall {
             println("Hit TOP")
+            self.checkScore()
             player2.updateLife()
         }
     }
     
-    func startGame() {
-        let x = random(min: CGFloat(-0.2), max: CGFloat(0.2))
-        let y = random(min: CGFloat(-0.2), max: CGFloat(0.2))
+    func checkScore() {
+        ball.physicsBody?.velocity = CGVectorMake(0,0) // freeze the ball
+        ball.runAction(SKAction .moveTo(CGPoint(x: size.width/2, y: size.height/2), duration: 0)) // move the ball to center screen
+        
+        if(player1.life <= 0 || player2.life <= 0) {
+            // Game Over
+            ball.removeFromParent()
+            gameoverLabel.hidden = false
+        } else {
+            countDown()
+        }
+    }
+    
+    func startBall() {
+        let x = random(min: CGFloat(-0.015), max: CGFloat(0.015))
+        let y = random(min: CGFloat(-0.015), max: CGFloat(0.015))
         println(x,y)
-        ball.physicsBody?.applyForce(CGVectorMake(x, y))
+        ball.physicsBody?.applyImpulse(CGVectorMake(x, y))
+        // Increase the speed every 10 second, until a player looses a life
         speedTimer = NSTimer.scheduledTimerWithTimeInterval(10.0, target: self, selector: Selector("speedUp"), userInfo: nil, repeats: true)
+    }
+    
+    func countDown(){
+        // Setting the delay time 3secs.
+        let delay = 3 * Double(NSEC_PER_SEC)
+        let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+        dispatch_after(time, dispatch_get_main_queue()) {
+            // Start game
+            self.startBall()
+        }
     }
     
     func speedUp() {
         /* X-direction */
         if(ball.physicsBody?.velocity.dx > 0) {
-            ball.physicsBody?.velocity.dx += 100
+            ball.physicsBody?.velocity.dx += 50
         } else {
-            ball.physicsBody?.velocity.dx -= 100
+            ball.physicsBody?.velocity.dx -= 50
         }
         /* Y-direction */
         if(ball.physicsBody?.velocity.dy > 0) {
-            ball.physicsBody?.velocity.dy += 100
+            ball.physicsBody?.velocity.dy += 50
         } else {
-            ball.physicsBody?.velocity.dy -= 100
+            ball.physicsBody?.velocity.dy -= 50
         }
     }
     
