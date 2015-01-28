@@ -1,5 +1,6 @@
 
 import SpriteKit
+import UIKit
 
 struct PhysicsCategory {
     static let None         : UInt32 = 0
@@ -21,15 +22,17 @@ class PlayerNode: SKSpriteNode {
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    let player1 = PlayerNode(imageNamed: "rectangle_red")
-    let player2 = PlayerNode(imageNamed: "rectangle_blue")
-    let ball = SKSpriteNode(imageNamed: "ball_aqua")
+    let player1 = PlayerNode(imageNamed: "player-pong.png")
+    let player2 = PlayerNode(imageNamed: "player-pong.png")
+    let ball = SKSpriteNode(imageNamed: "Pong-ball")
     var speedTimer = NSTimer()
     var gameoverLabel = SKLabelNode()
     
     override func didMoveToView(view: SKView) {
         /* Scene setup */
-        backgroundColor = SKColor.whiteColor()
+        let background = SKSpriteNode(imageNamed: "pong-background.png")
+        background.position = CGPointMake(self.size.width / 2, self.size.height / 2)
+        addChild(background)
         // Physics
         self.physicsBody = SKPhysicsBody(edgeLoopFromRect: view.frame)
         self.physicsBody?.friction = 0.0
@@ -40,8 +43,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Player 1 - Buttom bar / home */
         player1.name = "moveableByUser"
-        player1.setScale(0.1)
-        player1.position = CGPoint(x: size.width/2, y: size.height*0.1)
+        player1.setScale(1)
+        player1.position = CGPoint(x: size.width/2, y: size.height*0.05)
         addChild(player1)
         // Physics
         player1.physicsBody = SKPhysicsBody(rectangleOfSize: player1.size)
@@ -52,8 +55,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Player 2 - Top bar / opponent */
         player2.name = "moveableByUser"
-        player2.setScale(0.1)
-        player2.position = CGPoint(x: size.width/2, y: size.height*0.9)
+        player2.setScale(1)
+        player2.position = CGPoint(x: size.width/2, y: size.height*0.95)
         addChild(player2)
         // Physics
         player2.physicsBody = SKPhysicsBody(rectangleOfSize: player1.size)
@@ -63,11 +66,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         /* Ball */
-        ball.setScale(0.1)
+        ball.setScale(0.5)
         ball.position = CGPoint(x: size.width/2, y: size.height/2)
         addChild(ball)
         // Physics
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.frame.size.height/2)
+        ball.physicsBody = SKPhysicsBody(rectangleOfSize: ball.size)
         ball.physicsBody?.friction = 0.0
         ball.physicsBody?.restitution = 1.0
         ball.physicsBody?.linearDamping = 0.0
@@ -101,21 +104,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Life-label player 1 */
         player1.label.text = String(player1.life)
-        player1.label.fontColor = SKColor.redColor()
+        player1.label.fontColor = SKColor.whiteColor()
+        player1.label.fontName = "Helvetica-bold"
         player1.label.zRotation = CGFloat(3*M_PI/2)
         player1.label.position = CGPoint(x: size.width*0.9, y: size.height*0.45)
         addChild(player1.label)
         
         /* Life-label player 2 */
         player2.label.text = String(player2.life)
-        player2.label.fontColor = SKColor.blueColor()
+        player2.label.fontColor = SKColor.whiteColor()
+        player2.label.fontName = "Helvetica-bold"
         player2.label.zRotation = CGFloat(3*M_PI/2)
         player2.label.position = CGPoint(x: size.width*0.9, y: size.height*0.55)
         addChild(player2.label)
         
         /* GameOver Label */
         gameoverLabel.text = "Game over!"
-        gameoverLabel.fontColor = SKColor.blackColor()
+        gameoverLabel.fontColor = SKColor.whiteColor()
+        gameoverLabel.fontName = "Helvetica-bold"
         gameoverLabel.position = CGPoint(x: size.width/2, y: size.height/2)
         gameoverLabel.hidden = true
         addChild(gameoverLabel)
@@ -185,10 +191,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    
     func checkScore() {
         ball.physicsBody?.velocity = CGVectorMake(0,0) // freeze the ball
         ball.runAction(SKAction .moveTo(CGPoint(x: size.width/2, y: size.height/2), duration: 0)) // move the ball to center screen
-        
         if(player1.life <= 0 || player2.life <= 0) {
             // Game Over
             ball.removeFromParent()
@@ -199,8 +205,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func startBall() {
-        let x = random(min: CGFloat(-0.015), max: CGFloat(0.015))
-        let y = random(min: CGFloat(-0.015), max: CGFloat(0.015))
+        let x = random(min: CGFloat(-1), max: CGFloat(2))
+        let y = random(min: CGFloat(-1), max: CGFloat(2))
         println(x,y)
         ball.physicsBody?.applyImpulse(CGVectorMake(x, y))
         // Increase the speed every 10 second, until a player looses a life

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		027BE6E41A78F7BF00C0726C /* pong-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 027BE6E31A78F7BF00C0726C /* pong-background.png */; };
+		027BE6E81A79077B00C0726C /* player-pong.png in Resources */ = {isa = PBXBuildFile; fileRef = 027BE6E71A79077B00C0726C /* player-pong.png */; };
 		F6C8AD8A1A6FCE5C0019DE32 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C8AD891A6FCE5C0019DE32 /* AppDelegate.swift */; };
 		F6C8AD8E1A6FCE5C0019DE32 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C8AD8D1A6FCE5C0019DE32 /* GameScene.swift */; };
 		F6C8AD901A6FCE5C0019DE32 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C8AD8F1A6FCE5C0019DE32 /* GameViewController.swift */; };
@@ -27,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		027BE6E31A78F7BF00C0726C /* pong-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pong-background.png"; sourceTree = "<group>"; };
+		027BE6E71A79077B00C0726C /* player-pong.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-pong.png"; sourceTree = "<group>"; };
 		F6C8AD841A6FCE5C0019DE32 /* Pong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C8AD881A6FCE5C0019DE32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F6C8AD891A6FCE5C0019DE32 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -85,6 +89,8 @@
 				F6C8AD911A6FCE5C0019DE32 /* Main.storyboard */,
 				F6C8AD941A6FCE5D0019DE32 /* Images.xcassets */,
 				F6C8AD961A6FCE5D0019DE32 /* LaunchScreen.xib */,
+				027BE6E31A78F7BF00C0726C /* pong-background.png */,
+				027BE6E71A79077B00C0726C /* player-pong.png */,
 				F6C8AD871A6FCE5C0019DE32 /* Supporting Files */,
 			);
 			path = Pong;
@@ -198,6 +204,8 @@
 				F6C8AD981A6FCE5D0019DE32 /* LaunchScreen.xib in Resources */,
 				F6C8AD951A6FCE5D0019DE32 /* Images.xcassets in Resources */,
 				F6C8AD931A6FCE5C0019DE32 /* Main.storyboard in Resources */,
+				027BE6E81A79077B00C0726C /* player-pong.png in Resources */,
+				027BE6E41A78F7BF00C0726C /* pong-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +417,7 @@
 				F6C8ADA91A6FCE5D0019DE32 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F6C8ADAA1A6FCE5D0019DE32 /* Build configuration list for PBXNativeTarget "PongTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +426,7 @@
 				F6C8ADAC1A6FCE5D0019DE32 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
