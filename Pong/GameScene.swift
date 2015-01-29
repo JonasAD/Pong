@@ -180,14 +180,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Ball hits bottom - player 1 looses life
         if firstBody.categoryBitMask == PhysicsCategory.Ball && secondBody.categoryBitMask == PhysicsCategory.ButtomWall {
             println("Hit BOTTOM")
-            self.checkScore()
             player1.updateLife()
+            self.checkScore()
         }
         // Ball hits top - player 2 looses life
         if firstBody.categoryBitMask == PhysicsCategory.Ball && secondBody.categoryBitMask == PhysicsCategory.TopWall {
             println("Hit TOP")
-            self.checkScore()
             player2.updateLife()
+            self.checkScore()
         }
     }
     
